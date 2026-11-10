@@ -34,7 +34,10 @@ class DuaDetailsSheet extends StatelessWidget {
                 color: buttonsColor,
               ),
             ),
-            Text(benefit, style: TextStyle(fontWeight: .w600)),
+            Text(
+              benefit,
+              style: TextStyle(fontSize: 17, height: 1.6, fontWeight: .w600),
+            ),
             SizedBox(),
             OutlinedButton(
               onPressed: () => Navigator.pop(context),

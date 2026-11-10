@@ -43,7 +43,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-    <!-- Add this block to allow opening emails and web links -->
+    <!-- Required for opening emails and web links -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />

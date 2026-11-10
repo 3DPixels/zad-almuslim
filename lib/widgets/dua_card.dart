@@ -256,6 +256,7 @@ class _DuaCardState extends State<DuaCard> {
                                                     backgroundColor: widget
                                                         .containerBackgroundColor,
                                                     showDragHandle: true,
+                                                    isScrollControlled: true,
                                                     builder: (context) =>
                                                         DuaDetailsSheet(
                                                           source: widget

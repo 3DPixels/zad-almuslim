@@ -26,7 +26,7 @@ class AzkarSingle extends StatelessWidget {
 
         final supplication = currentItem.supplication;
 
-        return Padding(
+        return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
           child: Column(
             children: [

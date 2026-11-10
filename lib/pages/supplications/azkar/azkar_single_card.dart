@@ -61,8 +61,8 @@ class _AzkarSingleCardState extends State<AzkarSingleCard> {
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontFamily: AppFonts.notoSans,
-                        height: 1.8,
-                        fontWeight: FontWeight.w600,
+                        height: 1.7,
+                        // fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 16),

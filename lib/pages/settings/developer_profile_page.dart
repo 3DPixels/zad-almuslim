@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:project_azkar/utils/app_fonts.dart';
 import 'package:project_azkar/utils/app_colors.dart';
-import '../../utils/app_images.dart';
+import '../../../utils/app_images.dart';
+import '../../utils/url_helper.dart';
 
-class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
-
-  Future<void> _launchUrl(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
+class DeveloperProfilePage extends StatelessWidget {
+  const DeveloperProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +66,9 @@ class AboutPage extends StatelessWidget {
                 context,
                 icon: Icons.email_outlined,
                 title: 'ammar.salim2020@outlook.com',
-                onTap: () => _launchUrl('mailto:ammar.salim2020@outlook.com'),
+                onTap: () => UrlHelper.launchEmail(
+                  emailAddress: 'ammar.salim2020@outlook.com',
+                ),
                 trailingIcon: Icons.copy,
                 onTrailingTap: () {
                   Clipboard.setData(
@@ -93,7 +88,7 @@ class AboutPage extends StatelessWidget {
                 context,
                 icon: Icons.link,
                 title: 'LinkedIn',
-                onTap: () => _launchUrl(
+                onTap: () => UrlHelper.launchWebUrl(
                   'https://www.linkedin.com/in/ammar-ahmad-ismail-24bb24vv',
                 ),
                 trailingIcon: Icons.arrow_forward_ios,

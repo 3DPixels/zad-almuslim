@@ -25,10 +25,10 @@ class PrayerTime extends StatelessWidget {
           foregroundColor: Theme.of(context).colorScheme.onSecondary,
           child: Icon(
             currentPrayer
-                ? Icons.access_time
+                ? Icons.access_time_filled
                 : passed
                 ? Icons.check_circle
-                : Icons.check_circle_outline,
+                : Icons.access_time,
           ),
         ),
         Text(

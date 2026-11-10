@@ -130,7 +130,6 @@ class SettingsCubit extends Cubit<SettingsState> {
   //   if (value) {
   //     final granted = await NotificationService().requestPermissions();
   //     if (!granted) return;
-
   //     emit(state.copyWith(dailyAzkarNotifications: true));
   //     await CacheService.cacheDailyAzkarToggle(true);
   //     await _scheduler.scheduleHourlyAzkar();
