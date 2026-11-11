@@ -38,8 +38,3 @@ This privacy policy is effective as of 2026-11-10.
 
 **Contact Us**
 If you have any questions regarding privacy while using the Application, please contact the Service Provider via email at zad_almuslim2@proton.me.
-
-<style>
-  p.view { display: none !important; }
-  footer { display: none !important; }
-</style>
