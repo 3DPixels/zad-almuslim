@@ -1,3 +1,4 @@
+import '../extensions/date_time_extnesions.dart';
 import 'adhan_service.dart';
 import 'cache_service.dart';
 import 'notification_service.dart';
@@ -88,14 +89,5 @@ class NotificationScheduler {
       );
       await CacheService.cacheScheduledCoordinates(lat, lng);
     }
-  }
-}
-
-extension Format12HourExt on DateTime {
-  String format12Hour() {
-    final int hour12 = hour % 12 == 0 ? 12 : hour % 12;
-    final String minutes = minute.toString().padLeft(2, '0');
-    final String period = hour < 12 ? 'ص' : 'م';
-    return '$hour12:$minutes $period';
   }
 }
