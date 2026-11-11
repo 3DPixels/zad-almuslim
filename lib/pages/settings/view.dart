@@ -173,7 +173,7 @@ class SettingsPage extends StatelessWidget {
                       color: AppColors.hint,
                     ),
                     onTap: () => UrlHelper.launchWebUrl(
-                      'https://sites.google.com/view/your-app-privacy-policy',
+                      'https://3dpixels.github.io/zad-almuslim/privacy-policy.html',
                     ),
                   ),
                   const Divider(color: AppColors.darkBorder, height: 1),

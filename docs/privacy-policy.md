@@ -1,3 +1,7 @@
+<style>
+  .view { display: none !important; }
+  footer { display: none !important; }
+</style>
 **Privacy Policy**
 
 This privacy policy applies to the زاد المسلم app for mobile devices, together with any related services operated by Ammar Ahmad (collectively, the "Application"). Ammar Ahmad is hereby referred to as the "Service Provider".
