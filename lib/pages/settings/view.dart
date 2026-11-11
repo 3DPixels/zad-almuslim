@@ -162,6 +162,21 @@ class SettingsPage extends StatelessWidget {
                   //   onTap: _launchStoreRating,
                   // ),
                   // const Divider(color: AppColors.darkBorder, height: 1),
+
+                  ListTile(
+                    title: const Text(
+                      'سياسة الخصوصية',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    leading: const Icon(
+                      Icons.privacy_tip_outlined,
+                      color: AppColors.hint,
+                    ),
+                    onTap: () => UrlHelper.launchWebUrl(
+                      'https://sites.google.com/view/your-app-privacy-policy',
+                    ),
+                  ),
+                  const Divider(color: AppColors.darkBorder, height: 1),
                   ListTile(
                     title: const Text(
                       'اقتراحات وشكاوى',
