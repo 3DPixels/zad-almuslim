@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.project_azkar"
+    namespace = "com.ammarismail.zad_almuslim"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
@@ -16,7 +16,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.project_azkar"
+        applicationId = "com.ammarismail.zad_almuslim"
         minSdk = flutter.minSdkVersion
         targetSdk = 37
         versionCode = flutter.versionCode
