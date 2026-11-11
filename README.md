@@ -1,4 +1,4 @@
-# Daleel Al-Muslim
+# Zad Al-Muslim - (زاد المسلم)
 
 *By Ammar Ismail*
 
