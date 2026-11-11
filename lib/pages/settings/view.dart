@@ -187,7 +187,7 @@ class SettingsPage extends StatelessWidget {
                       color: AppColors.hint,
                     ),
                     onTap: () => UrlHelper.launchEmail(
-                      emailAddress: 'ammar.salim2020@outlook.com',
+                      emailAddress: 'zad_almuslim2@proton.me',
                       subject: 'اقتراحات وشكاوى لتطبيق دليل المسلم',
                     ),
                   ),

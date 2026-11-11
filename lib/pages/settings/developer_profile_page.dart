@@ -65,14 +65,14 @@ class DeveloperProfilePage extends StatelessWidget {
               _buildContactTile(
                 context,
                 icon: Icons.email_outlined,
-                title: 'ammar.salim2020@outlook.com',
+                title: 'Email',
                 onTap: () => UrlHelper.launchEmail(
-                  emailAddress: 'ammar.salim2020@outlook.com',
+                  emailAddress: 'ammar.ismail.dev@gmail.com',
                 ),
                 trailingIcon: Icons.copy,
                 onTrailingTap: () {
                   Clipboard.setData(
-                    const ClipboardData(text: 'ammar.salim2020@outlook.com'),
+                    const ClipboardData(text: 'ammar.ismail.dev@gmail.com'),
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
