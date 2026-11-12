@@ -13,7 +13,7 @@ class AzkarCardData {
   final IconData? icon;
   final String? iconPath;
   final CardPalette palette;
-  final DuaTime duaTime; // Added your enum here!
+  final DuaTime duaTime;
 
   const AzkarCardData({
     required this.title,
@@ -74,39 +74,60 @@ final List<AzkarCardData> azkarCards = [
 
 class HomeAzkarGrid extends StatelessWidget {
   const HomeAzkarGrid({super.key});
+
+  Widget _buildCard(BuildContext context, AzkarCardData card) {
+    return Expanded(
+      child: GradientCard(
+        palette: card.palette,
+        title: card.title,
+        subtitle: card.subtitle,
+        icon: card.icon,
+        iconPath: card.iconPath,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AzkarPage(
+                allSupplications: ZekrRepo.getAzkarByTime(card.duaTime),
+                title: card.title,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SliverGrid.builder(
-      // shrinkWrap: true,
-      // physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 1.3,
+    return SliverToBoxAdapter(
+      child: Column(
+        spacing: 16,
+        children: [
+          // First Row (Morning & Evening Azkar)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 16,
+              children: [
+                _buildCard(context, azkarCards[0]),
+                _buildCard(context, azkarCards[1]),
+              ],
+            ),
+          ),
+          // Second Row (After Prayer & Before Sleep Azkar)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 16,
+              children: [
+                _buildCard(context, azkarCards[2]),
+                _buildCard(context, azkarCards[3]),
+              ],
+            ),
+          ),
+        ],
       ),
-      itemCount: azkarCards.length,
-      itemBuilder: (context, index) {
-        final card = azkarCards[index];
-        return GradientCard(
-          palette: card.palette,
-          title: card.title,
-          subtitle: card.subtitle,
-          icon: card.icon,
-          iconPath: card.iconPath,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AzkarPage(
-                  allSupplications: ZekrRepo.getAzkarByTime(card.duaTime),
-                  title: card.title,
-                ),
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

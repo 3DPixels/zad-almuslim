@@ -110,6 +110,7 @@ class _TimeRemainingContainerState extends State<TimeRemainingContainer> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: .center,
         children: [
           Text(
             widget.isPostAdhan ? 'منذ الأذان' : 'باقي على الأذان',

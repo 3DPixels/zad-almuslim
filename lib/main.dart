@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
       ],
+
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Azkar App',
@@ -69,6 +70,28 @@ class MyApp extends StatelessWidget {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: [Locale('ar')],
         theme: darkTheme(),
+        // builder wraps every screen in the app so we can control scaling globally!
+        builder: (context, child) {
+          final mediaQuery = MediaQuery.of(context);
+          // 1. Read the raw OS font scale factor (1.0 is default, > 1.0 means increased)
+          final double rawScale = mediaQuery.textScaler.scale(1.0);
+          // 2. If default or smaller (<= 1.0), clamp to 1.0.
+          // If increased (> 1.0), take only HALF of the increase, and cap at 1.35 max.
+          final double dampenedScale = rawScale <= 1.0
+              ? rawScale.clamp(1, 1)
+              : (1.0 + (rawScale - 1.0) * 0.5).clamp(1.0, 1.35);
+          return MediaQuery(
+            // Apply our safe, dampened text scale to all Text widgets in the app
+            data: mediaQuery.copyWith(
+              textScaler: TextScaler.linear(dampenedScale),
+            ),
+            // Globally scale all default Icon widgets (24.0 base size * dampenedScale)
+            child: IconTheme(
+              data: IconTheme.of(context).copyWith(size: 24.0 * dampenedScale),
+              child: child!,
+            ),
+          );
+        },
         home: const MainPage(),
       ),
     );

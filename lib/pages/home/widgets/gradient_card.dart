@@ -23,9 +23,15 @@ class GradientCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Read the globally scaled icon size from main.dart's IconTheme!
+    final double globalIconSize = IconTheme.of(context).size ?? 24.0;
+    final double iconPadding = MediaQuery.textScalerOf(context).scale(10.0);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        // Keeps the nice card height at default font size, but allows it to grow taller if needed
+        constraints: const BoxConstraints(minHeight: 135),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -40,21 +46,43 @@ class GradientCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 3,
+          // Pushes the icon to the top and the text to the bottom without overflowing
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 12,
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(iconPadding),
               decoration: BoxDecoration(
                 color: palette.glowColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: icon != null
-                  ? Icon(icon, color: palette.iconColor, size: 24)
-                  : SvgPicture.asset(iconPath!, width: 24),
+                  // Uses global IconTheme size automatically!
+                  ? Icon(icon, color: palette.iconColor)
+                  : SvgPicture.asset(
+                      iconPath!,
+                      width: globalIconSize,
+                      height: globalIconSize,
+                    ),
             ),
-            SizedBox(height: 10),
-            Text(title, style: Theme.of(context).textTheme.titleSmall),
-            Text(subtitle, style: TextStyle(color: Color(0xFF9CA3AF))),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 3,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Text(
+                  subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Color(0xFF9CA3AF)),
+                ),
+              ],
+            ),
           ],
         ),
       ),

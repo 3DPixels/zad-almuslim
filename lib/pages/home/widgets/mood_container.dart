@@ -25,6 +25,8 @@ class MoodContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Scale the 18.0 box padding proportionally with our global text scale
+    final double boxPadding = MediaQuery.textScalerOf(context).scale(18.0);
     return Column(
       spacing: 8,
       children: [
@@ -43,7 +45,7 @@ class MoodContainer extends StatelessWidget {
               child: InkWell(
                 onTap: openContainer,
                 child: Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: EdgeInsets.all(boxPadding),
                   child: Icon(iconData, color: iconColor),
                 ),
               ),

@@ -117,22 +117,21 @@ class Body extends StatelessWidget {
 
         // Moods
         SliverToBoxAdapter(
-          child: SizedBox(
-            height: 92,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: MoodRepo.allMoods.length,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              separatorBuilder: (context, index) => SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final mood = MoodRepo.allMoods[index];
-                return MoodContainer(
-                  title: mood.header,
-                  iconData: mood.icon,
-                  iconColor: mood.colorPalette.mainColor,
-                  detailsPage: MoodsList(mood),
-                );
-              },
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              spacing: 16,
+              children: MoodRepo.allMoods
+                  .map(
+                    (mood) => MoodContainer(
+                      title: mood.header,
+                      iconData: mood.icon,
+                      iconColor: mood.colorPalette.mainColor,
+                      detailsPage: MoodsList(mood),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ),

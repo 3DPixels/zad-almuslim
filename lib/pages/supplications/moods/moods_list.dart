@@ -19,7 +19,7 @@ class MoodsList extends StatefulWidget {
 class _MoodsListState extends State<MoodsList> {
   late ScrollController _scrollController;
   bool _isCollapsed = false;
-  final double _expandedHeight = 248.0;
+  double _expandedHeight = 248.0;
 
   late final List<DuaModel> supplications;
 
@@ -48,6 +48,14 @@ class _MoodsListState extends State<MoodsList> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 2. Scale the SliverAppBar height proportionally with the OS text settings!
+    // At default settings, it remains 248.0. At highest zoom, it grows to ~334.8.
+    _expandedHeight = MediaQuery.textScalerOf(context).scale(248.0);
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
@@ -55,6 +63,7 @@ class _MoodsListState extends State<MoodsList> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaler = MediaQuery.textScalerOf(context);
     return Scaffold(
       backgroundColor: widget.mood.colorPalette.backgroundColor,
       body: CustomScrollView(
@@ -110,11 +119,16 @@ class _MoodsListState extends State<MoodsList> {
                     spacing: 12,
                     children: [
                       CircleAvatar(
-                        radius: 45,
+                        radius: textScaler.scale(
+                          45,
+                        ), // Scales the circle radius
                         backgroundColor: widget.mood.colorPalette.mainColor
                             .withValues(alpha: .2),
                         foregroundColor: widget.mood.colorPalette.mainColor,
-                        child: Icon(widget.mood.icon, size: 48),
+                        child: Icon(
+                          widget.mood.icon,
+                          size: textScaler.scale(48), // Scales the icon size
+                        ),
                       ),
                       Text(
                         widget.mood.title,
@@ -130,6 +144,7 @@ class _MoodsListState extends State<MoodsList> {
                         ),
                       ),
                       Container(
+                        margin: const EdgeInsets.only(bottom: 8),
                         decoration: BoxDecoration(
                           color: widget.mood.colorPalette.mainColor.withValues(
                             alpha: 0.10,

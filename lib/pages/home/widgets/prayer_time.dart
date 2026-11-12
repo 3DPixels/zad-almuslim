@@ -15,15 +15,22 @@ class PrayerTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Scale avatar and icon proportionally with the text size
+    final scaler = MediaQuery.textScalerOf(
+      context,
+    ).clamp(minScaleFactor: 1.0, maxScaleFactor: 1.35);
+
     return Column(
       spacing: 5,
       children: [
         CircleAvatar(
+          radius: scaler.scale(20),
           backgroundColor: !currentPrayer
               ? Colors.transparent
               : Theme.of(context).colorScheme.secondary,
           foregroundColor: Theme.of(context).colorScheme.onSecondary,
           child: Icon(
+            size: scaler.scale(24),
             currentPrayer
                 ? Icons.access_time_filled
                 : passed

@@ -82,32 +82,34 @@ class _AzkarSingleCardState extends State<AzkarSingleCard> {
                       ),
                       // const SizedBox(height: 12),
                     ],
-                    TextButton.icon(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: AppColors.darkGreenSurface,
-                          showDragHandle: true,
-                          builder: (context) => DuaDetailsSheet(
-                            source: widget.supplication.source,
-                            benefit:
-                                widget.supplication.benefitSource ??
-                                widget.supplication.benefit,
-                            buttonsColor: AppColors.primary,
-                          ),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.primary,
-                        textStyle: Theme.of(context).textTheme.bodyMedium
-                            ?.copyWith(
-                              fontFamily: AppFonts.notoSans,
-                              fontWeight: FontWeight.w600,
+                    if (widget.supplication.source.isNotEmpty)
+                      TextButton.icon(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: AppColors.darkGreenSurface,
+                            showDragHandle: true,
+                            isScrollControlled: true,
+                            builder: (context) => DuaDetailsSheet(
+                              source: widget.supplication.source,
+                              benefit:
+                                  widget.supplication.benefitSource ??
+                                  widget.supplication.benefit,
+                              buttonsColor: AppColors.primary,
                             ),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.primary,
+                          textStyle: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                fontFamily: AppFonts.notoSans,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        label: Text(widget.supplication.source),
+                        icon: const Icon(Icons.menu_book, size: 18),
                       ),
-                      label: Text(widget.supplication.source),
-                      icon: const Icon(Icons.menu_book, size: 18),
-                    ),
                   ],
                 ),
               ),
