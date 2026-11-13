@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="splash_color">#1E1E1E</color>
+    <color name="splash_gradient_start">#1C631F</color>
+    <color name="splash_gradient_center">#18431B</color>
+    <color name="splash_gradient_end">#1A1C1D</color>
+
+    <!-- Used by Android 12+ system cold-start splash before launch_background draws -->
+    <color name="splash_color">#18431B</color>
 </resources>

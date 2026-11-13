@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_azkar/pages/settings/changelog_sheet.dart';
 
 import 'package:project_azkar/pages/settings/developer_profile_page.dart';
+import 'package:project_azkar/services/notification_service.dart';
 import 'package:project_azkar/utils/app_colors.dart';
 import '../../cubits/prayer_times_cubit.dart';
 import '../../cubits/settings_cubit.dart';
@@ -117,7 +118,10 @@ class SettingsPage extends StatelessWidget {
                 ],
               ),
             ),
-
+            FilledButton(
+              child: Text('Test'),
+              onPressed: () => NotificationService().showNotification(),
+            ),
             const SizedBox(height: 20),
 
             // SECTION 2: Information & Support
