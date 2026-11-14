@@ -30,6 +30,8 @@ class SettingsCubit extends Cubit<SettingsState> {
       if (isPrayersOn) {
         isPrayersOn = false;
         await CacheService.cachePrayerToggle(false);
+        // CHANGED: Also clear any previously scheduled prayer alarms & metadata
+        await _scheduler.cancelAllPrayers();
       }
       if (isDailyOn) {
         isDailyOn = false;
@@ -38,6 +40,8 @@ class SettingsCubit extends Cubit<SettingsState> {
       if (isMorningNightOn) {
         isMorningNightOn = false;
         await CacheService.cacheMorningNightAzkarToggle(false);
+        // CHANGED: Also clear any previously scheduled morning/night Azkar alarms
+        await _scheduler.cancelMorningNightAzkar();
       }
     }
 
@@ -57,6 +61,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     required String country,
     bool force = false,
   }) async {
+    // CHANGED: Verify both permissions are granted before attempting to schedule on app start/refresh
+    final hasPermissions = await _notificationService.checkPermissions();
+    if (!hasPermissions) return;
+
     // Runs on app start. force is false. It will only schedule if the cache requires it.
     await _scheduler.scheduleAllNotifications(
       lat: lat,

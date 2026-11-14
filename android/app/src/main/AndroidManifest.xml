@@ -4,7 +4,7 @@
     <!-- Required for Reverse Geocoding to get the city name string -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Required for prayer times notifications -->
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:label="زاد المسلم"

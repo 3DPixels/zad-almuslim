@@ -22,7 +22,7 @@ class NotificationService {
     await _plugin.initialize(settings: settings);
   }
 
-  /// Quietly checks if notification permissions are granted without prompting dialogs.
+  /// Quietly checks if BOTH notification and exact alarm permissions are granted without prompting dialogs.
   Future<bool> checkPermissions() async {
     final androidImplementation = _plugin
         .resolvePlatformSpecificImplementation<
@@ -30,13 +30,22 @@ class NotificationService {
         >();
 
     if (androidImplementation != null) {
-      final enabled = await androidImplementation.areNotificationsEnabled();
-      return enabled ?? false;
+      // Check standard notification permission
+      final notificationsEnabled =
+          await androidImplementation.areNotificationsEnabled() ?? false;
+
+      // Also check if SCHEDULE_EXACT_ALARM is granted
+      final exactAlarmsEnabled =
+          await androidImplementation.canScheduleExactNotifications() ?? false;
+
+      // Both must be true for exact scheduled notifications to work
+      return notificationsEnabled && exactAlarmsEnabled;
     }
     return false;
   }
 
-  /// Prompts the user with the system permission dialog.
+  /// Prompts the user with the system notification dialog, then redirects to the
+  /// system "Alarms & reminders" settings page if exact alarms are not yet allowed.
   Future<bool> requestPermissions() async {
     final androidImplementation = _plugin
         .resolvePlatformSpecificImplementation<
@@ -44,9 +53,22 @@ class NotificationService {
         >();
 
     if (androidImplementation != null) {
-      final notifResult = await androidImplementation
-          .requestNotificationsPermission();
-      return notifResult ?? false;
+      // 1. Request standard POST_NOTIFICATIONS permission first
+      final notifResult =
+          await androidImplementation.requestNotificationsPermission() ?? false;
+      if (!notifResult) return false;
+
+      // 2. Check if SCHEDULE_EXACT_ALARM is already allowed
+      bool exactAlarmResult =
+          await androidImplementation.canScheduleExactNotifications() ?? false;
+
+      // 3. If not allowed, open the system Settings page for Alarms & Reminders
+      if (!exactAlarmResult) {
+        exactAlarmResult =
+            await androidImplementation.requestExactAlarmsPermission() ?? false;
+      }
+
+      return notifResult && exactAlarmResult;
     }
     return false;
   }
@@ -66,6 +88,11 @@ class NotificationService {
     required DateTime time,
   }) async {
     if (time.isBefore(DateTime.now())) return;
+
+    // Guard against PlatformException(exact_alarms_not_permitted)
+    // in case the user revoked the exact alarm permission in system settings.
+    final hasPermission = await checkPermissions();
+    if (!hasPermission) return;
 
     final tzTime = tz.TZDateTime.from(time, tz.local);
 

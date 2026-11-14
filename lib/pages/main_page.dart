@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_azkar/pages/settings/view.dart';
+import 'package:project_azkar/pages/settings/settings_view.dart';
 import 'package:project_azkar/utils/app_colors.dart';
 
 import 'home/view.dart';
