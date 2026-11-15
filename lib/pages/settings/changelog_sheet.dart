@@ -35,6 +35,10 @@ final List<ChangelogItem> currentRelease = [
     text:
         'دليل تفصيلي لأداء العبادات الخاصة مثل صلاة الجنازة، الاستخارة، والكسوف.',
   ),
+  ChangelogItem(
+    type: ChangeType.fix,
+    text: 'اصلاح مشكلة تغير حجم الخطوط مع نظام الهاتف بشكل قوش',
+  ),
 ];
 
 final List<ChangelogItem> upcomingFeatures = [
@@ -58,6 +62,7 @@ final List<ChangelogItem> upcomingFeatures = [
     type: ChangeType.upcoming,
     text: 'تشغيل صوتي للأذكار مع ميزة الترديد التلقائي والتحكم في سرعة الصوت.',
   ),
+  ChangelogItem(type: ChangeType.upcoming, text: 'اضافة لغات اخرى'),
 ];
 
 void showChangelogSheet(BuildContext context) async {
