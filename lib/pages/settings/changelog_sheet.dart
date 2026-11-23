@@ -14,21 +14,7 @@ class ChangelogItem {
 final List<ChangelogItem> currentRelease = [
   ChangelogItem(
     type: ChangeType.newFeature,
-    text:
-        'تحديد مواقيت الصلاة تلقائياً بناءً على موقعك الجغرافي وعرض الوقت المتبقي للأذان.',
-  ),
-  ChangelogItem(
-    type: ChangeType.newFeature,
     text: 'حفظ التقدم اليومي للأذكار.',
-  ),
-
-  ChangelogItem(
-    type: ChangeType.newFeature,
-    text: 'إشعارات دقيقة لمواقيت الأذان وتنبيهات يومية لأذكار الصباح والمساء.',
-  ),
-  ChangelogItem(
-    type: ChangeType.newFeature,
-    text: 'مكتبة شاملة للأذكار مع عداد تفاعلي لحفظ تقدمك اليومي وتشجيعك.',
   ),
   ChangelogItem(
     type: ChangeType.newFeature,
@@ -45,7 +31,7 @@ final List<ChangelogItem> currentRelease = [
   ),
   ChangelogItem(
     type: ChangeType.fix,
-    text: 'اصلاح مشكلة تغير حجم الخطوط مع نظام الهاتف بشكل قوي',
+    text: 'اصلاح مشكلة تغير حجم الخطوط مع نظام الهاتف.',
   ),
 ];
 
