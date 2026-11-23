@@ -22,28 +22,31 @@ class LocationService {
     return await Geolocator.getLastKnownPosition();
   }
 
-  Future<Position> getCurrentPosition() async {
-    return await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 10),
-      ),
-    );
+  Future<Position?> getCurrentPosition() async {
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 10),
+        ),
+      ).timeout(const Duration(seconds: 12));
+    } catch (_) {
+      // Indoors or backgrounded GPS timeout -> fallback to OS cached position
+      return await Geolocator.getLastKnownPosition().timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => null,
+      );
+    }
   }
 
   Future<Placemark?> getPlacemark(double lat, double lng) async {
     try {
-      List<Placemark> placemarks = await _geocoding.placemarkFromCoordinates(
-        lat,
-        lng,
-        locale: const Locale('ar'),
-      );
-      if (placemarks.isNotEmpty) {
-        return placemarks.first;
-      }
-    } catch (e) {
+      final placemarks = await _geocoding
+          .placemarkFromCoordinates(lat, lng, locale: const Locale('ar'))
+          .timeout(const Duration(seconds: 6));
+      return placemarks.isNotEmpty ? placemarks.first : null;
+    } catch (_) {
       return null;
     }
-    return null;
   }
 }

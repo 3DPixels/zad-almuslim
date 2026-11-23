@@ -48,11 +48,8 @@ if [ "$IS_VALID" -eq 0 ]; then
 fi
 
 # 5. Google Play Compliant Versioning
-if [[ "$NEW_BASE" == "$OLD_BASE" ]]; then
-    NEW_BUILD=$(( OLD_BUILD + 1 ))
-else
-    NEW_BUILD=1
-fi
+# Google Play requires the versionCode (build number) to ALWAYS increment.
+NEW_BUILD=$(( OLD_BUILD + 1 ))
 
 FINAL_VERSION="${NEW_BASE}+${NEW_BUILD}"
 

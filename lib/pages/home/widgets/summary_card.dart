@@ -4,7 +4,7 @@ import 'package:project_azkar/cubits/prayer_times_cubit.dart';
 import 'package:project_azkar/pages/home/widgets/prayer_time.dart';
 import 'package:project_azkar/pages/home/widgets/time_remaining_container.dart';
 
-import '../../../extensions/date_time_extnesions.dart';
+import '../../../extensions/date_time_extensions.dart';
 import '../../../utils/app_colors.dart';
 
 class SummaryCard extends StatefulWidget {

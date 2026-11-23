@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:adhan/adhan.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,46 +14,54 @@ class SettingsCubit extends Cubit<SettingsState> {
   final NotificationScheduler _scheduler;
   final NotificationService _notificationService;
 
+  // Signals when _init() has finished loading toggles & verifying permissions
+  final Completer<void> _initCompleter = Completer<void>();
+
   SettingsCubit(this._scheduler, this._notificationService)
     : super(const SettingsState()) {
     _init();
   }
 
   Future<void> _init() async {
-    bool isPrayersOn = CacheService.getPrayerToggle();
-    bool isDailyOn = CacheService.getDailyAzkarToggle();
-    bool isMorningNightOn = CacheService.getMorningNightAzkarToggle();
+    try {
+      bool isPrayersOn = CacheService.getPrayerToggle();
+      bool isDailyOn = CacheService.getDailyAzkarToggle();
+      bool isMorningNightOn = CacheService.getMorningNightAzkarToggle();
 
-    // Check silently without displaying an OS permission dialog on startup
-    final hasPermissions = await _notificationService.checkPermissions();
+      // Check silently without displaying an OS permission dialog on startup
+      final hasPermissions = await _notificationService.checkPermissions();
 
-    // Fallback: If toggles were saved as ON but OS permissions were revoked, turn toggles OFF
-    if (!hasPermissions) {
-      if (isPrayersOn) {
-        isPrayersOn = false;
-        await CacheService.cachePrayerToggle(false);
-        // CHANGED: Also clear any previously scheduled prayer alarms & metadata
-        await _scheduler.cancelAllPrayers();
+      // Fallback: If toggles were saved as ON but OS permissions were revoked, turn toggles OFF
+      if (!hasPermissions) {
+        if (isPrayersOn) {
+          isPrayersOn = false;
+          await CacheService.cachePrayerToggle(false);
+          await _scheduler.cancelAllPrayers();
+        }
+        if (isDailyOn) {
+          isDailyOn = false;
+          await CacheService.cacheDailyAzkarToggle(false);
+        }
+        if (isMorningNightOn) {
+          isMorningNightOn = false;
+          await CacheService.cacheMorningNightAzkarToggle(false);
+          await _scheduler.cancelMorningNightAzkar();
+        }
       }
-      if (isDailyOn) {
-        isDailyOn = false;
-        await CacheService.cacheDailyAzkarToggle(false);
-      }
-      if (isMorningNightOn) {
-        isMorningNightOn = false;
-        await CacheService.cacheMorningNightAzkarToggle(false);
-        // CHANGED: Also clear any previously scheduled morning/night Azkar alarms
-        await _scheduler.cancelMorningNightAzkar();
+
+      emit(
+        SettingsState(
+          prayerNotifications: isPrayersOn,
+          dailyAzkarNotifications: isDailyOn,
+          morningNightAzkarNotifications: isMorningNightOn,
+        ),
+      );
+    } finally {
+      // Unblock any scheduleNotifications() call waiting for startup init
+      if (!_initCompleter.isCompleted) {
+        _initCompleter.complete();
       }
     }
-
-    emit(
-      SettingsState(
-        prayerNotifications: isPrayersOn,
-        dailyAzkarNotifications: isDailyOn,
-        morningNightAzkarNotifications: isMorningNightOn,
-      ),
-    );
   }
 
   /// Synchronizes schedules once location status has settled (GPS, cache, or fallback).
@@ -61,11 +71,12 @@ class SettingsCubit extends Cubit<SettingsState> {
     required String country,
     bool force = false,
   }) async {
-    // CHANGED: Verify both permissions are granted before attempting to schedule on app start/refresh
+    // Wait until _init() has loaded the real toggle states before reading `state`
+    await _initCompleter.future;
+
     final hasPermissions = await _notificationService.checkPermissions();
     if (!hasPermissions) return;
 
-    // Runs on app start. force is false. It will only schedule if the cache requires it.
     await _scheduler.scheduleAllNotifications(
       lat: lat,
       lng: lng,

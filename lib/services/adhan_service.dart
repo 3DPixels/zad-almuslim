@@ -94,9 +94,8 @@ class AdhanService {
   }) {
     final coordinates = Coordinates(lat, lng);
     final params = _getCalculationMethod(country, selectedMethod);
-    final date = DateComponents.from(DateTime.now());
 
-    return PrayerTimes(coordinates, date, params);
+    return PrayerTimes.today(coordinates, params);
   }
 
   PrayerTimes getTomorrowPrayers(

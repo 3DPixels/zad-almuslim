@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PermissionDialog extends StatelessWidget {
   final String title;
@@ -19,7 +20,7 @@ class PermissionDialog extends StatelessWidget {
     required String content,
     bool isPermanent = false,
   }) {
-    return showDialog(
+    return showAdaptiveDialog(
       context: context,
       builder: (context) => PermissionDialog(
         title: title,
@@ -31,7 +32,7 @@ class PermissionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(title),
       content: Text(content),
       actions: [
@@ -42,7 +43,7 @@ class PermissionDialog extends StatelessWidget {
         if (isPermanent)
           TextButton(
             onPressed: () {
-              // Geolocator.openAppSettings();
+              Geolocator.openAppSettings();
               Navigator.of(context).pop();
             },
             child: const Text('الإعدادات'),

@@ -15,113 +15,181 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   final LocationService _locationService;
   final AdhanService _adhanService;
 
+  // Prevents two location fetches from running at the same time
+  // (e.g., startup fetch overlapping with pull-to-refresh)
+  bool _isFetching = false;
+
   PrayerTimesCubit(this._locationService, this._adhanService)
     : super(const PrayerTimesState()) {
     _initializeLocationFlow();
   }
 
   Future<void> _initializeLocationFlow({bool isManual = false}) async {
-    // 1. Load Cache Immediately
-    final cached = CacheService.getCachedLocation();
-    if (cached != null) {
-      emit(
-        state.copyWith(
-          locationStatus: LocationStatus.initial,
-          city: cached['city'],
-          country: cached['country'],
-          latitude: cached['lat'],
-          longitude: cached['lng'],
-          isManualRefresh: isManual,
-          locationSource: 'من الذاكرة المؤقتة',
-          locationMessage: 'جاري التحقق من الصلاحيات...',
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          locationStatus: LocationStatus.initial,
-          city: 'الرياض',
-          country: 'السعودية',
-          latitude: 24.7136,
-          longitude: 46.6753,
-          isManualRefresh: isManual,
-          locationSource: 'الموقع الافتراضي',
-          locationMessage: 'لا يوجد موقع محفوظ',
-        ),
-      );
-    }
-    calculatePrayers();
+    // Guard: ignore duplicate calls if a fetch is already running
+    if (_isFetching) return;
+    _isFetching = true;
 
-    // 2. Check Location Service
-    bool serviceEnabled = await _locationService.isServiceEnabled();
-    if (!serviceEnabled) {
-      emit(
-        state.copyWith(
-          locationStatus: LocationStatus.serviceDisabled,
-          locationMessage: 'خدمة الموقع معطلة',
-        ),
-      );
-      return;
-    }
-
-    // 3. Check & Request Permissions
-    LocationPermission permission = await _locationService.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await _locationService.requestPermission();
-      if (permission == LocationPermission.denied) {
+    try {
+      // 1. Load Cache Immediately
+      final cached = CacheService.getCachedLocation();
+      if (cached != null) {
         emit(
           state.copyWith(
-            locationStatus: LocationStatus.permissionDenied,
-            locationMessage: 'تم رفض إذن الوصول للموقع',
+            locationStatus: LocationStatus.initial,
+            city: cached['city'],
+            country: cached['country'],
+            latitude: cached['lat'],
+            longitude: cached['lng'],
+            isManualRefresh: isManual,
+            locationSource: 'من الذاكرة المؤقتة',
+            locationMessage: 'جاري التحقق من الصلاحيات...',
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            locationStatus: LocationStatus.initial,
+            city: 'الرياض',
+            country: 'السعودية',
+            latitude: 24.7136,
+            longitude: 46.6753,
+            isManualRefresh: isManual,
+            locationSource: 'الموقع الافتراضي',
+            locationMessage: 'لا يوجد موقع محفوظ',
+          ),
+        );
+      }
+      calculatePrayers();
+
+      // 2. Check Location Service
+      bool serviceEnabled = await _locationService.isServiceEnabled();
+      if (!serviceEnabled) {
+        emit(
+          state.copyWith(
+            locationStatus: LocationStatus.serviceDisabled,
+            locationMessage: 'خدمة الموقع معطلة',
           ),
         );
         return;
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
+      // 3. Check & Request Permissions
+      LocationPermission permission = await _locationService.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await _locationService.requestPermission();
+        if (permission == LocationPermission.denied) {
+          emit(
+            state.copyWith(
+              locationStatus: LocationStatus.permissionDenied,
+              locationMessage: 'تم رفض إذن الوصول للموقع',
+            ),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        emit(
+          state.copyWith(
+            locationStatus: LocationStatus.permissionPermanentlyDenied,
+            locationMessage: 'إذن الوصول للموقع مرفوض نهائياً',
+          ),
+        );
+        return;
+      }
+
+      // 4. Allowed: Fetch Location in background & Update
       emit(
         state.copyWith(
-          locationStatus: LocationStatus.permissionPermanentlyDenied,
-          locationMessage: 'إذن الوصول للموقع مرفوض نهائياً',
+          locationStatus: LocationStatus.loading,
+          locationMessage: 'جاري تحديث الموقع...',
         ),
       );
-      return;
-    }
+      final Position? position = await _locationService.getCurrentPosition();
 
-    // 4. Allowed: Fetch Location in background & Update
-    emit(
-      state.copyWith(
-        locationStatus: LocationStatus.loading,
-        locationMessage: 'جاري تحديث الموقع...',
-      ),
-    );
+      // If BOTH live GPS and getLastKnownPosition returned null:
+      // Stop the spinner and keep the cached (or default) location already in state.
+      if (position == null) {
+        emit(
+          state.copyWith(
+            locationStatus: LocationStatus.error,
+            locationMessage: 'فشل في جلب الموقع بدقة',
+          ),
+        );
+        return;
+      }
 
-    try {
-      Position? position = await _locationService.getCurrentPosition();
-
-      Placemark? place = await _locationService.getPlacemark(
+      final Placemark? place = await _locationService.getPlacemark(
         position.latitude,
         position.longitude,
       );
 
-      // Prefer locality (city) first, then administrativeArea (governorate)
-      String city = place?.locality ?? place?.administrativeArea ?? 'غير معروف';
+      // Check if the user is still within 30 km of their cached location (only used when geocoding fails but user is still near)
+      final bool isNearCache =
+          cached != null &&
+          Geolocator.distanceBetween(
+                cached['lat'] as double,
+                cached['lng'] as double,
+                position.latitude,
+                position.longitude,
+              ) <
+              30000;
 
-      city = city.replaceAll('محافظة', '').trim();
+      String city;
+      String country;
 
-      // Clean up any stray commas or spaces left behind
-      city = city.replaceAll(RegExp(r'^[,،\s]+|[,،\s]+$'), '');
+      if (place != null) {
+        // Geocoding succeeded (online).
+        // Check isNotEmpty because Android Geocoder often returns "" instead of null.
+        final String rawCity =
+            (place.locality != null && place.locality!.trim().isNotEmpty)
+            ? place.locality!
+            : (place.administrativeArea ?? '');
 
-      String country = place?.country ?? 'غير معروف';
+        city = rawCity
+            .replaceAll('محافظة', '')
+            .replaceAll(RegExp(r'^[,،\s]+|[,،\s]+$'), '')
+            .trim();
 
-      // Update Cache with both
-      await CacheService.cacheLocation(
-        position.latitude,
-        position.longitude,
-        city,
-        country,
-      );
+        // Fallback if both locality and administrativeArea were empty
+        if (city.isEmpty) {
+          city = (cached != null && isNearCache)
+              ? cached['city'] as String
+              : 'موقعك الحالي';
+        }
+
+        country = (place.country != null && place.country!.trim().isNotEmpty)
+            ? place.country!.trim()
+            : ((cached != null && isNearCache)
+                  ? cached['country'] as String
+                  : 'غير معروف');
+
+        // Safe to save to cache since we have real geocoded names
+        await CacheService.cacheLocation(
+          position.latitude,
+          position.longitude,
+          city,
+          country,
+        );
+      } else if (cached != null && isNearCache) {
+        // Geocoding failed (offline/timeout), but user is still near cached spot:
+        // Keep the cached city & country so AdhanService keeps the right calculation method.
+        city = cached['city'] as String;
+        country = cached['country'] as String;
+
+        // Update coordinates while preserving the known city & country
+        await CacheService.cacheLocation(
+          position.latitude,
+          position.longitude,
+          city,
+          country,
+        );
+      } else {
+        // Geocoding failed AND user has no cache (or traveled >30 km while offline):
+        // Do NOT overwrite cache with 'غير معروف', just use live GPS coordinates for now.
+        city = 'موقعك الحالي';
+        country = 'غير معروف';
+      }
 
       // 5. Final State Update
       emit(
@@ -144,6 +212,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
           locationMessage: 'فشل في جلب الموقع بدقة',
         ),
       );
+    } finally {
+      _isFetching = false;
+      emit(state.copyWith(isManualRefresh: false));
     }
   }
 
@@ -266,7 +337,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   Future<void> refreshLocation() async {
     await Future.delayed(
-      const Duration(milliseconds: 2000),
+      const Duration(milliseconds: 1500),
     ); // Optional: slight delay for UX
 
     await _initializeLocationFlow(isManual: true);

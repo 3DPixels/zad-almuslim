@@ -89,11 +89,6 @@ class NotificationService {
   }) async {
     if (time.isBefore(DateTime.now())) return;
 
-    // Guard against PlatformException(exact_alarms_not_permitted)
-    // in case the user revoked the exact alarm permission in system settings.
-    final hasPermission = await checkPermissions();
-    if (!hasPermission) return;
-
     final tzTime = tz.TZDateTime.from(time, tz.local);
 
     await _plugin.zonedSchedule(
@@ -105,10 +100,10 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'prayer_channel',
           'مواقيت الصلاة و اذكار يومية',
-          groupKey: 'dalil_almuslim_group',
+          // groupKey: 'dalil_almuslim_group',
           importance: Importance.max,
           priority: Priority.max,
-          category: AndroidNotificationCategory.reminder,
+          category: AndroidNotificationCategory.event,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

@@ -186,10 +186,34 @@ class SettingsPage extends StatelessWidget {
                       Icons.email_outlined,
                       color: AppColors.hint,
                     ),
-                    onTap: () => UrlHelper.launchEmail(
-                      emailAddress: 'zad_almuslim2@proton.me',
-                      subject: 'اقتراحات وشكاوى لتطبيق دليل المسلم',
-                    ),
+                    onTap: () {
+                      showAdaptiveDialog(
+                        context: context,
+                        builder: (context) => AlertDialog.adaptive(
+                          actionsAlignment: .center,
+                          content: Text(
+                            'قبل ارسال اقتراح أو شكوى، بالرجاء النظر اولا على قائمة التغييرات القادمة (الاعدادات -> اضافات قادمة)',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('إلغاء'),
+                            ),
+                            FilledButton.icon(
+                              onPressed: () => UrlHelper.launchEmail(
+                                emailAddress: 'zad_almuslim2@proton.me',
+                                subject: 'اقتراحات وشكاوى لتطبيق دليل المسلم',
+                              ),
+                              label: const Text('ارسال ايميل'),
+                              icon: const Icon(
+                                Icons.email_outlined,
+                                // color: AppColors.hint,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   const Divider(color: AppColors.darkBorder, height: 1),
                   ListTile(

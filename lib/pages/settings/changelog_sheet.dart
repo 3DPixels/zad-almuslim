@@ -37,7 +37,7 @@ final List<ChangelogItem> currentRelease = [
   ),
   ChangelogItem(
     type: ChangeType.fix,
-    text: 'اصلاح مشكلة تغير حجم الخطوط مع نظام الهاتف بشكل قوش',
+    text: 'اصلاح مشكلة تغير حجم الخطوط مع نظام الهاتف بشكل قوي',
   ),
 ];
 
@@ -62,7 +62,33 @@ final List<ChangelogItem> upcomingFeatures = [
     type: ChangeType.upcoming,
     text: 'تشغيل صوتي للأذكار مع ميزة الترديد التلقائي والتحكم في سرعة الصوت.',
   ),
-  ChangelogItem(type: ChangeType.upcoming, text: 'اضافة لغات اخرى'),
+  ChangelogItem(type: ChangeType.upcoming, text: 'اضافة لغات اخرى.'),
+  ChangelogItem(
+    type: ChangeType.upcoming,
+    text: '.اضافة سبحة الكترونية تفاعلية',
+  ),
+  ChangelogItem(type: ChangeType.upcoming, text: 'حفظ التقدم اليومي للأذكار.'),
+  ChangelogItem(
+    type: ChangeType.upcoming,
+    text: 'التحكم في صوت اشعارات الأذان.',
+  ),
+  ChangelogItem(
+    type: ChangeType.upcoming,
+    text: 'اضافة اشعارات اخرى مثل الصلاة على النبي ﷺ.',
+  ),
+  ChangelogItem(
+    type: ChangeType.upcoming,
+    text: 'عرض مواقيت العبادات و الاعياد مثل الايام القمرية و رمضان.',
+  ),
+  ChangelogItem(
+    type: ChangeType.upcoming,
+    text: 'تحسين نظام البطاقات في الأذكار.',
+  ),
+  ChangelogItem(
+    type: ChangeType.upcoming,
+    text: 'اضافة اختيار البلد يدويا في حالة عدم عمل الgps.',
+  ),
+  // ChangelogItem(type: ChangeType.upcoming, text: ''),
 ];
 
 void showChangelogSheet(BuildContext context) async {
@@ -184,7 +210,7 @@ class _ChangelogSheetContent extends StatelessWidget {
 
                     const SizedBox(height: 30),
                     const Text(
-                      'ميزات الإصدار الأول',
+                      'اخر تحديثات',
                       style: TextStyle(
                         color: AppColors.hint,
                         fontSize: 13,
@@ -198,7 +224,7 @@ class _ChangelogSheetContent extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     const Text(
-                      'قيد التطوير (قريباً)',
+                      'قيد التطوير',
                       style: TextStyle(
                         color: AppColors.hint,
                         fontSize: 13,
@@ -237,7 +263,12 @@ class _ChangelogSheetContent extends StatelessWidget {
   }
 
   Widget _buildFeatureItem(ChangelogItem item) {
-    final bool isNew = item.type == ChangeType.newFeature;
+    final (Color color, String label) = switch (item.type) {
+      ChangeType.newFeature => (AppColors.primary, 'جديد'),
+      ChangeType.upcoming => (AppColors.hint, 'قادم'),
+      ChangeType.fix => (Colors.green, 'إصلاح'),
+      ChangeType.tweak => (Colors.orange, 'تحسين'),
+    };
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
@@ -245,20 +276,17 @@ class _ChangelogSheetContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
-          // Tag Label (جديد / قادم)
+          // Tag Label
           Container(
-            // margin: const EdgeInsets.only(top: 2, left: 16),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isNew
-                  ? AppColors.primary.withAlpha(50)
-                  : AppColors.hint.withAlpha(50),
+              color: color.withAlpha(50),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              isNew ? 'جديد' : 'قادم',
+              label,
               style: TextStyle(
-                color: isNew ? AppColors.primary : AppColors.hint,
+                color: color,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
