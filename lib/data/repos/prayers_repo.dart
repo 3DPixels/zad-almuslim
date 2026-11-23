@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_azkar/data/models/prayer_model.dart';
+import 'package:project_azkar/pages/prayers/models/prayer_model.dart';
 import 'package:project_azkar/utils/app_icons.dart';
 import 'package:project_azkar/utils/app_images.dart';
 import 'package:project_azkar/utils/enums.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_azkar/data/models/dua_model.dart';
-import 'package:project_azkar/data/models/mood_model.dart';
+import 'package:project_azkar/pages/moods/models/mood_model.dart';
 import 'package:project_azkar/data/repos/mood_supplications_repo.dart';
 import 'package:project_azkar/widgets/dua_card.dart';
 
-import '../../../extensions/num_extension.dart';
-import '../../../utils/app_fonts.dart';
+import '../../extensions/num_extension.dart';
+import '../../utils/app_fonts.dart';
 
 class MoodsList extends StatefulWidget {
   final MoodModel mood;

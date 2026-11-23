@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:adhan/adhan.dart';
 
 import '../../services/adhan_service.dart';
-import '../cubits/prayer_times_cubit.dart';
-import '../cubits/settings_cubit.dart';
+import '../pages/home/cubits/prayer_times_cubit.dart';
+import '../pages/settings/cubits/settings_cubit.dart';
 
 class CalculationMethodDialog extends StatelessWidget {
   const CalculationMethodDialog({super.key});

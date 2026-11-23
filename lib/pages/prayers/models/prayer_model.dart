@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import '../../utils/enums.dart';
+import '../../../utils/enums.dart';
 
 class PrayerModel {
   final PrayerCategories prayerType;

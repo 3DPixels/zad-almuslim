@@ -17,7 +17,11 @@ final List<ChangelogItem> currentRelease = [
     text:
         'تحديد مواقيت الصلاة تلقائياً بناءً على موقعك الجغرافي وعرض الوقت المتبقي للأذان.',
   ),
-  ChangelogItem(type: ChangeType.newFeature, text: 'عرض التاريخ الهجري بدقة.'),
+  ChangelogItem(
+    type: ChangeType.newFeature,
+    text: 'حفظ التقدم اليومي للأذكار.',
+  ),
+
   ChangelogItem(
     type: ChangeType.newFeature,
     text: 'إشعارات دقيقة لمواقيت الأذان وتنبيهات يومية لأذكار الصباح والمساء.',
@@ -34,6 +38,10 @@ final List<ChangelogItem> currentRelease = [
     type: ChangeType.newFeature,
     text:
         'دليل تفصيلي لأداء العبادات الخاصة مثل صلاة الجنازة، الاستخارة، والكسوف.',
+  ),
+  ChangelogItem(
+    type: ChangeType.tweak,
+    text: 'تحسين نظام البطاقات في الأذكار.',
   ),
   ChangelogItem(
     type: ChangeType.fix,
@@ -67,7 +75,7 @@ final List<ChangelogItem> upcomingFeatures = [
     type: ChangeType.upcoming,
     text: '.اضافة سبحة الكترونية تفاعلية',
   ),
-  ChangelogItem(type: ChangeType.upcoming, text: 'حفظ التقدم اليومي للأذكار.'),
+
   ChangelogItem(
     type: ChangeType.upcoming,
     text: 'التحكم في صوت اشعارات الأذان.',
@@ -80,13 +88,10 @@ final List<ChangelogItem> upcomingFeatures = [
     type: ChangeType.upcoming,
     text: 'عرض مواقيت العبادات و الاعياد مثل الايام القمرية و رمضان.',
   ),
+
   ChangelogItem(
     type: ChangeType.upcoming,
-    text: 'تحسين نظام البطاقات في الأذكار.',
-  ),
-  ChangelogItem(
-    type: ChangeType.upcoming,
-    text: 'اضافة اختيار البلد يدويا في حالة عدم عمل الgps.',
+    text: 'اضافة اختيار البلد يدويا في حالة عدم عمل GPS.',
   ),
   // ChangelogItem(type: ChangeType.upcoming, text: ''),
 ];
@@ -266,7 +271,7 @@ class _ChangelogSheetContent extends StatelessWidget {
     final (Color color, String label) = switch (item.type) {
       ChangeType.newFeature => (AppColors.primary, 'جديد'),
       ChangeType.upcoming => (AppColors.hint, 'قادم'),
-      ChangeType.fix => (Colors.green, 'إصلاح'),
+      ChangeType.fix => (Colors.amber, 'إصلاح'),
       ChangeType.tweak => (Colors.orange, 'تحسين'),
     };
 

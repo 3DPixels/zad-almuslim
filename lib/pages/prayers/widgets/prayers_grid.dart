@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:project_azkar/data/models/prayer_model.dart';
+import 'package:project_azkar/pages/prayers/models/prayer_model.dart';
 import 'package:project_azkar/data/repos/prayers_repo.dart';
 import 'package:project_azkar/pages/prayers/prayer_details.dart';
 
-import '../../utils/app_colors.dart';
+import '../../../utils/app_colors.dart';
 
 class PrayersGrid extends StatelessWidget {
   const PrayersGrid({super.key});

@@ -12,7 +12,7 @@
 
 ## TODO
 * Convert page transitions to open containers and hero tags.
-* Check why navigating back to main page redirects to home (might go if I switch page transitions like step abobe)
+* Check why navigating back to main page redirects to home (might go if I switch page transitions like step above. Also, this behaviour happens only on newer android that have predictive pop).
 * Add ratings, app share, and github redirect pages.
 * Enhance developer page and add text animations.
 * Maybe add buy me coffee page.

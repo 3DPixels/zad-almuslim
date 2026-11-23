@@ -4,8 +4,8 @@ import 'package:project_azkar/pages/settings/changelog_sheet.dart';
 
 import 'package:project_azkar/pages/settings/developer_profile_page.dart';
 import 'package:project_azkar/utils/app_colors.dart';
-import '../../cubits/prayer_times_cubit.dart';
-import '../../cubits/settings_cubit.dart';
+import '../home/cubits/prayer_times_cubit.dart';
+import 'cubits/settings_cubit.dart';
 import '../../services/adhan_service.dart';
 import '../../utils/url_helper.dart';
 

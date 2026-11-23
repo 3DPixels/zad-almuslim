@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:project_azkar/data/repos/zekr_repo.dart';
-import 'package:project_azkar/pages/supplications/azkar/azkar_page.dart';
+import 'package:project_azkar/pages/azkar/azkar_page.dart';
+import 'package:project_azkar/services/azkar_cache_service.dart';
 import 'package:project_azkar/utils/app_icons.dart';
 import 'package:project_azkar/utils/enums.dart';
 
-import '../../../data/models/card_pallete_model.dart';
+import '../../../services/cache_service.dart';
+import '../../../utils/app_colors.dart';
+import '../models/card_pallete_model.dart';
 import 'gradient_card.dart';
 
 class AzkarCardData {
@@ -72,27 +75,79 @@ final List<AzkarCardData> azkarCards = [
   ),
 ];
 
-class HomeAzkarGrid extends StatelessWidget {
+class HomeAzkarGrid extends StatefulWidget {
   const HomeAzkarGrid({super.key});
 
+  @override
+  State<HomeAzkarGrid> createState() => _HomeAzkarGridState();
+}
+
+class _HomeAzkarGridState extends State<HomeAzkarGrid> {
   Widget _buildCard(BuildContext context, AzkarCardData card) {
+    final supplications = ZekrRepo.getAzkarByTime(card.duaTime);
+    final dailyProgress = AzkarCacheService.getDailyProgress(
+      card.duaTime,
+      supplications.length,
+    );
+
+    // You can pass dailyProgress.completedZekr / dailyProgress.totalZekr
+    // (or dailyProgress.totalRepsRead) directly into GradientCard once you add
+    // a progress badge/bar to it. For now, it displays cleanly in the subtitle:
+    final progressText = dailyProgress.completedZekr > 0
+        ? '${dailyProgress.completedZekr}/${dailyProgress.totalZekr} مكتمل'
+        : card.subtitle;
+
     return Expanded(
       child: GradientCard(
         palette: card.palette,
         title: card.title,
-        subtitle: card.subtitle,
+        subtitle: progressText,
         icon: card.icon,
         iconPath: card.iconPath,
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          final readInSession = await Navigator.push<int>(
             context,
             MaterialPageRoute(
               builder: (context) => AzkarPage(
-                allSupplications: ZekrRepo.getAzkarByTime(card.duaTime),
+                allSupplications: supplications,
                 title: card.title,
+                duaTime: card.duaTime,
               ),
             ),
           );
+
+          if (!mounted) return;
+          setState(() {}); // Refresh cards with today's updated progress
+
+          if (readInSession != null && readInSession > 0) {
+            ScaffoldMessenger.of(this.context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Row(
+                    spacing: 10,
+                    children: [
+                      const Icon(
+                        Icons.bookmark_added_rounded,
+                        color: AppColors.primary,
+                      ),
+                      Expanded(
+                        child: Text(
+                          'أحسنت! قرأت $readInSession ذكر وتم حفظ تقدمك',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: AppColors.darkGreenNavBarBG,
+                  duration: const Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+          }
         },
       ),
     );
@@ -104,7 +159,6 @@ class HomeAzkarGrid extends StatelessWidget {
       child: Column(
         spacing: 16,
         children: [
-          // First Row (Morning & Evening Azkar)
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,7 +169,6 @@ class HomeAzkarGrid extends StatelessWidget {
               ],
             ),
           ),
-          // Second Row (After Prayer & Before Sleep Azkar)
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,

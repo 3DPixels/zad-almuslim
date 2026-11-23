@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_azkar/cubits/prayer_times_cubit.dart';
+import 'package:project_azkar/pages/home/cubits/prayer_times_cubit.dart';
 import 'package:project_azkar/pages/home/widgets/prayer_time.dart';
 import 'package:project_azkar/pages/home/widgets/time_remaining_container.dart';
 

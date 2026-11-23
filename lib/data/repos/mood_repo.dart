@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_azkar/data/models/mood_model.dart';
+import 'package:project_azkar/pages/moods/models/mood_model.dart';
 import 'package:project_azkar/utils/enums.dart';
 
 // icon: Icons.mode_standby,

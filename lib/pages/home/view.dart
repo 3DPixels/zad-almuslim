@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_azkar/pages/home/widgets/permission_dialog.dart';
 
-import '../../cubits/prayer_times_cubit.dart';
-import '../../cubits/settings_cubit.dart';
+import 'cubits/prayer_times_cubit.dart';
+import '../settings/cubits/settings_cubit.dart';
 import 'body.dart';
 
 class HomePage extends StatefulWidget {

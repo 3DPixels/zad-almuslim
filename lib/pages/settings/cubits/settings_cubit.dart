@@ -4,9 +4,9 @@ import 'package:adhan/adhan.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../services/cache_service.dart';
-import '../../services/notification_service.dart';
-import '../../services/notification_scheduler.dart';
+import '../../../../services/cache_service.dart';
+import '../../../../services/notification_service.dart';
+import '../../../../services/notification_scheduler.dart';
 
 part 'settings_state.dart';
 

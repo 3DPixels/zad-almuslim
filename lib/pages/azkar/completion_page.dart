@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:project_azkar/services/cache_service.dart';
+import 'package:project_azkar/services/azkar_cache_service.dart';
 import 'package:reel_text/reel_text.dart';
 
-import '../../../extensions/num_extension.dart';
-import '../../../utils/app_colors.dart';
+import '../../extensions/num_extension.dart';
+import '../../utils/app_colors.dart';
 
 class CompletionPage extends StatefulWidget {
+  /// Total reps for this azkar category.
   final int totalRead;
 
-  const CompletionPage({super.key, required this.totalRead});
+  /// Reps completed during this visit, used only to animate the lifetime
+  /// ReelText roll-up without re-writing cache.
+  final int addedInSession;
+
+  const CompletionPage({
+    super.key,
+    required this.totalRead,
+    this.addedInSession = 0,
+  });
 
   @override
   State<CompletionPage> createState() => _CompletionPageState();
@@ -16,27 +25,29 @@ class CompletionPage extends StatefulWidget {
 
 class _CompletionPageState extends State<CompletionPage> {
   late int globalCount;
+  late final int _targetLifetimeTotal;
 
   @override
   void initState() {
     super.initState();
-    // 1. Get the current global total BEFORE adding today's session
-    globalCount = CacheService.getAzkarCount();
+    // Lifetime total is already persisted by AzkarCubit as each zekr finishes
+    _targetLifetimeTotal = AzkarCacheService.getLifetimeAzkarCount();
 
-    // 2. Calculate the new lifetime total
-    final newLifetimeTotal = globalCount + widget.totalRead;
+    // Start ReelText at the pre-session lifetime count so it animates upward
+    globalCount = (_targetLifetimeTotal - widget.addedInSession).clamp(
+      0,
+      _targetLifetimeTotal,
+    );
 
-    // 3. Cache it in the background immediately
-    CacheService.cacheAzkarCount(newLifetimeTotal);
-
-    // 4. Wait for page transition, then trigger ReelText animation
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        setState(() {
-          globalCount = newLifetimeTotal;
-        });
-      }
-    });
+    if (globalCount < _targetLifetimeTotal) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          setState(() {
+            globalCount = _targetLifetimeTotal;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -58,11 +69,10 @@ class _CompletionPageState extends State<CompletionPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'لقد قرأت اليوم ${widget.totalRead.toArabic()} من الأذكار',
+              'أتممت ${widget.totalRead.toArabic()} من الأذكار',
               style: const TextStyle(fontSize: 18, color: Colors.white70),
             ),
             const SizedBox(height: 16),
-            // The animated global count
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -71,9 +81,8 @@ class _CompletionPageState extends State<CompletionPage> {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 ReelText(
-                  // Isolating the number in ReelText prevents Arabic text bugs
                   globalCount.toArabic(),
-                  options: ReelTextOptions(
+                  options: const ReelTextOptions(
                     duration: Duration(milliseconds: 500),
                   ),
                   style: const TextStyle(

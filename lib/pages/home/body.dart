@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../cubits/prayer_times_cubit.dart';
+import 'cubits/prayer_times_cubit.dart';
 import '../../data/repos/mood_repo.dart';
 import 'widgets/mood_container.dart';
 import 'widgets/offline_banner.dart';
 import 'widgets/summary_card.dart';
-import '../supplications/moods/moods_list.dart';
+import '../moods/moods_list.dart';
 import 'widgets/home_azkar_grid.dart';
 
 class Body extends StatelessWidget {

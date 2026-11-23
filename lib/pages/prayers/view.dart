@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'carousel_prayers.dart';
-import 'prayers_grid.dart';
+import 'widgets/carousel_prayers.dart';
+import 'widgets/prayers_grid.dart';
 
 class PrayersPage extends StatelessWidget {
   const PrayersPage({super.key});

@@ -13,14 +13,14 @@ sealed class CacheService {
     await prefsWithCache.clear();
   }
 
-  static Future<void> cacheAzkarCount(int count) async {
-    await prefsWithCache.setInt('azkarCount', count);
-  }
+  // static Future<void> cacheAzkarCount(int count) async {
+  //   await prefsWithCache.setInt('azkarCount', count);
+  // }
 
-  static int getAzkarCount() {
-    final count = prefsWithCache.getInt('azkarCount');
-    return count ?? 0;
-  }
+  // static int getAzkarCount() {
+  //   final count = prefsWithCache.getInt('azkarCount');
+  //   return count ?? 0;
+  // }
 
   static Future<void> cacheLocation(
     double lat,

@@ -3,11 +3,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:project_azkar/data/models/prayer_time_model.dart';
+import 'package:project_azkar/pages/home/models/prayer_time_model.dart';
 
-import '../services/adhan_service.dart';
-import '../services/cache_service.dart';
-import '../services/location_service.dart';
+import '../../../services/adhan_service.dart';
+import '../../../services/cache_service.dart';
+import '../../../services/location_service.dart';
 
 part 'prayer_times_state.dart';
 
@@ -148,6 +148,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
         city = rawCity
             .replaceAll('محافظة', '')
+            .replaceAll('منطقة', '')
             .replaceAll(RegExp(r'^[,،\s]+|[,،\s]+$'), '')
             .trim();
 

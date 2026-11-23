@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../data/models/card_pallete_model.dart';
+import '../models/card_pallete_model.dart';
 
 class GradientCard extends StatelessWidget {
   final CardPalette palette;

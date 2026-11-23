@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../cubits/azkar_cubit.dart';
+import '../cubits/azkar_cubit.dart';
 import '../../../utils/app_colors.dart';
 
 class DailyProgressWidget extends StatelessWidget {

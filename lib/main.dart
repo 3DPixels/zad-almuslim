@@ -5,8 +5,8 @@ import 'package:project_azkar/pages/main_page.dart';
 import 'package:project_azkar/services/cache_service.dart';
 import 'package:project_azkar/utils/dark_theme.dart';
 
-import 'cubits/prayer_times_cubit.dart';
-import 'cubits/settings_cubit.dart';
+import 'pages/home/cubits/prayer_times_cubit.dart';
+import 'pages/settings/cubits/settings_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'services/adhan_service.dart';
 import 'services/location_service.dart';
